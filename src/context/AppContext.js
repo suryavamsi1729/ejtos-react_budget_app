@@ -8,11 +8,14 @@ export const AppReducer = (state, action) => {
             let total_budget = 0;
             total_budget = state.expenses.reduce(
                 (previousExp, currentExp) => {
+                    console.log(previousExp , currentExp.cost);
                     return previousExp + currentExp.cost
                 },0
             );
+            console.log(total_budget);
             total_budget = total_budget + action.payload.cost;
             action.type = "DONE";
+            console.log(total_budget);
             if(total_budget <= state.budget) {
                 total_budget = 0;
                 state.expenses.map((currentExp)=> {
@@ -26,6 +29,32 @@ export const AppReducer = (state, action) => {
                 };
             } else {
                 alert("Cannot increase the allocation! Out of funds");
+                return {
+                    ...state
+                }
+            }
+            case 'DEC_EXPENSE':
+            let total_budgetval =0;
+            total_budgetval = state.expenses.reduce(
+                (previousExp, currentExp) => {
+                    return previousExp + currentExp.cost
+                },0
+            );
+            total_budgetval = total_budgetval - action.payload.cost;
+            action.type = "DONE";
+            if(total_budgetval >= 0) {
+                total_budgetval = 0;
+                state.expenses.map((currentExp)=> {
+                    if(currentExp.name === action.payload.name) {
+                        currentExp.cost = currentExp.cost-action.payload.cost;
+                    }
+                    return currentExp
+                });
+                return {
+                    ...state,
+                };
+            } else {
+                alert("Cannot Decrece the allocation! Out of funds");
                 return {
                     ...state
                 }
@@ -78,9 +107,9 @@ export const AppReducer = (state, action) => {
 
 // 1. Sets the initial state when the app loads
 const initialState = {
-    budget: 2000,
+    budget: 20000,
     expenses: [
-        { id: "Marketing", name: 'Marketing', cost: 50 },
+        { id: "Marketing", name: 'Marketing', cost: 19060},
         { id: "Finance", name: 'Finance', cost: 300 },
         { id: "Sales", name: 'Sales', cost: 70 },
         { id: "Human Resource", name: 'Human Resource', cost: 40 },
